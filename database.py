@@ -26,7 +26,7 @@ class MyDatabase:
 
     def get_db_details(self, table_name='EXPENSE_TRACKER'):
 
-        self.cursor.execute('SELECT * FROM ' + str(table_name))
+        ('SELECT * FROM ' + str(table_name))
         data = self.cursor.fetchall()
         return data
 
@@ -44,12 +44,12 @@ class MyDatabase:
         else:
             print("Inserted data succcessfully into DB ")
 
-    def update_table_data_expense_tracker(self, data):
+    def update_table_data_expense_tracker(self, data, time):
         try:
             query = 'UPDATE EXPENSE_TRACKER set addExpense = ' + str(data["addExpense"]) + ', category = "' + str(
                 data["category"]) + '", dateTime = "' + str(
                 data["dateTime"]) + '", description = "' + str(data["description"]) + '" , payee = "' + data[
-                        "payee"] + '" WHERE userId = ' + str(data['userId']) + ';'
+                        "payee"] + '" WHERE userId = ' + str(data['userId']) + 'and dateTime = "' + str(time) + ';'
             print(query)
             self.cursor.execute(query)
             self.connection.commit()
@@ -57,3 +57,31 @@ class MyDatabase:
             print("Error updating into database {}".format(error))
         else:
             print("Updated data succcessfully into DB ")
+
+    def get_table_data_expense_tracker(self):
+        try:
+            query = 'SELECT * FROM EXPENSE_TRACKER FOR JSON AUTO ;'
+            print(query)
+            self.cursor.execute(query)
+            data = self.cursor.fetchall()
+            print(data)
+            return data
+        except Exception as error:
+            print("Error fetching the table data {}".format(error))
+        else:
+            print("Fetching data succcessfully from DB ")
+
+    def get_userid_data_expense_tracker(self, userid):
+        try:
+            query = 'SELECT * FROM EXPENSE_TRACKER WHERE userId = ' + str(userid) + ';'
+            print(query)
+            self.cursor.execute(query)
+            data = self.cursor.fetchall()
+            return data
+        except Exception as error:
+            print("Error fetching the table data {}".format(error))
+        else:
+            print("Fetching data succcessfully from DB ")
+
+
+    # create another file to parse the sql data and convert them to json ;
