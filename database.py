@@ -60,10 +60,13 @@ class MyDatabase:
 
     def get_table_data_expense_tracker(self):
         try:
-            query = 'SELECT * FROM EXPENSE_TRACKER FOR JSON AUTO ;'
+            query = 'SELECT * FROM EXPENSE_TRACKER;'
             print(query)
             self.cursor.execute(query)
+            header = [row[0] for row in self.cursor.description]
             data = self.cursor.fetchall()
+            print(data)
+            data = self.convert_sql_to_json(header, data)
             print(data)
             return data
         except Exception as error:
@@ -76,12 +79,28 @@ class MyDatabase:
             query = 'SELECT * FROM EXPENSE_TRACKER WHERE userId = ' + str(userid) + ';'
             print(query)
             self.cursor.execute(query)
+            header = [row[0] for row in self.cursor.description]
             data = self.cursor.fetchall()
+            print(data)
+            data = self.convert_sql_to_json(header, data)
+            print(data)
             return data
         except Exception as error:
             print("Error fetching the table data {}".format(error))
         else:
             print("Fetching data succcessfully from DB ")
+            
+    def add_new_category(self, data):
+        try:
+            query = 'Insert into CATEGORIES (UserId, addExpense, category) values (' + str(
+                data["userId"]) + ',' + str(data["addExpense"]) + ',"' + str(data["category"]) +  '");'
+            print(query)
+            self.cursor.execute(query)
+            self.connection.commit()
+        except Exception as error:
+            print("Error inserting into database {}".format(error))
+        else:
+            print("Inserted data succcessfully into DB ")
 
 
     # create another file to parse the sql data and convert them to json ;
